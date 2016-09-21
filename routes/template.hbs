@@ -1,0 +1,18 @@
+{
+  "customers": [
+    {{#repeat 5}}
+    {
+      "firstName": "{{firstName}}",
+      "lastName" : "{{lastName}}",
+      "age": "{{int 25 40}}",
+      "phoneNumber": "{{phone "xxxxxxxxxx"}}",
+      "email": "{{email}}",
+      "city": "{{city}}",
+      "country": "{{country}}",
+      "postalCode": "{{postcode}}",
+      "latitude": "{{lat}}",
+      "longitude": "{{long}}"
+    }
+    {{/repeat}}
+  ]
+  }
