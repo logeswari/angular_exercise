@@ -144,7 +144,7 @@ exports.postJsonData = function(req,res){
 				
 				Customer.find({userName : new RegExp(obj.userName, "i")}, function(err, custArray) {						
 					if(custArray && custArray.length > 0){						
-						
+						object.type = "Old";
 						console.log(custArray[0]._id)
 
 						Customer.update({"_id":custArray[0]._id},object,function(err, updatedVal) {
