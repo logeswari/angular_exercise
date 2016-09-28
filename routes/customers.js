@@ -110,7 +110,7 @@ var convertJson = function(resJson,clbk){
 			    	cbk(null,null)
 			    },
 			    formatPhone : function(cbk){
-			    	obj.phoneNumber = "+91 "+obj.phoneNumber;
+			    	obj.phoneNumber = "+1 "+obj.phoneNumber;
 			    	cbk(null,null)
 			    },
 			    formatLatLng : function(cbk) {
@@ -132,23 +132,55 @@ var convertJson = function(resJson,clbk){
 exports.postJsonData = function(req,res){
 	var result = {};
 	if(req.body){
+		var userNameArray = [];
 		async.each(req.body,function(obj,callback){
+			userNameArray.push(obj.userName)
 			obj.createdTime = moment(new Date().getTime()).format('DD/MM/YYYY hh:mm A');
 			obj.createdTimeStamp = new Date().getTime();
 			
+			
 			validateData(obj,function(err,object){
-				var cust = new Customer(object);
-				cust.save(function(err) {
-					if(err)
-						{
-						console.log(err)
-						}
-					callback(null)
-				});
+				object.type = "";							
+				
+				Customer.find({userName : new RegExp(obj.userName, "i")}, function(err, custArray) {						
+					if(custArray && custArray.length > 0){						
+						
+						console.log(custArray[0]._id)
+
+						Customer.update({"_id":custArray[0]._id},object,function(err, updatedVal) {
+							console.log("updatedVal ...")
+							console.log(updatedVal)
+							  if (err) {
+								  console.log("err in update")
+								  console.log(updatedVal)
+							  }
+							  callback(null)
+							});
+						
+					}else{
+						object.type = "New";
+						var cust = new Customer(object);
+
+						cust.save(function(err) {
+							if(err)
+								{
+								console.log(err)
+								}
+							callback(null)
+						});
+					}			
+				});				
+				
 			})
 			
 		},function(err){
-			res.send(result)
+			 Customer.update({userName : {$nin : userNameArray }},{ $set: { type: "Missed"}}, { multi: true }, function (err, updated) {
+				 console.log("err......")
+				 console.log(err)
+				 console.log("updated.....")
+				 console.log(updated)
+				res.send(result)
+			 });
 		})
 	}else{
 		res.send(result)
@@ -163,13 +195,7 @@ var validateData = function(obj,callback){
 		async.series({
 			checkUserName : function(cbk){
 				if(obj.userName){
-					Customer.find({userName : new RegExp(obj.userName, "i")}, function(err, cust) {						
-						if(cust && cust.length > 0){
-							valid = false;
-							tag.push(tags.tag1["0"])
-						}
-						cbk(null,null)
-					});
+					cbk(null,null)					
 				}else{
 					valid = false;
 					tag.push(tags.tag2["0"])
@@ -187,12 +213,15 @@ var validateData = function(obj,callback){
 			},
 			checkPhone : function(cbk){
 				if(obj.phoneNumber){
-					var phoneArray = obj.phoneNumber.split(" ");
-					if(phoneArray.length != 2 || phoneArray[1].length != 10){
-						valid = false;
+					var re =/([0-9\s\-]{7,})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/;
+					var phoneValid = re.test(obj.phoneNumber);
+					if(phoneValid){
+						cbk(null,null)
+					}else{
+				    	valid = false;
 						tag.push(tags.tag1["1"])
-					}
-					cbk(null,null)
+				    	cbk(null,null)
+				    }	
 				}else{
 					valid = false;
 					tag.push(tags.tag2["2"])
@@ -235,7 +264,7 @@ var tags = {
 		"1":{
 			id : 1,
 			field : "phoneNumber",
-			description : "Phone Number should be preceeded with country code and should be 10 Digits"
+			description : "Invalid Phone Number"
 		},
 		"2":{
 			id : 1,

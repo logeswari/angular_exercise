@@ -1,0 +1,96 @@
+
+<div ng-controller="listController">
+<div style="display:none;" page-loading style="text-align:center"><h4><span class="label label-info" style="height:25px;">Loading...</h4></span></div>
+
+<div class="col-md-12">
+	<div class="row">
+		<div class="col-md-12">
+			<button class="btn btn-primary" style="margin-top:30px;" value="" ng-click="readData()" data-toggle="modal" data-target="#myModal">GENERATE JSON</button>
+			<tags-input class="bootstrap pull-right"
+	                ng-model="userInput.type"
+	                placeholder="Choose a Filter"
+	                on-tag-added="filterChoosen($tag,'add')"
+	                on-tag-removed="filterChoosen($tag,'remove')"
+	                replace-spaces-with-dashes="false" style="width:400px; margin-top:30px; ">
+	      			<auto-complete source="loadFilers($query)"
+	                     min-length="0"
+	                     debounce-delay="0"></auto-complete>
+	    	</tags-input>
+	    	
+    	</div>
+	</div>
+
+<div class="row" style="white-space:nowrap">
+	<div class="col-md-12">
+		 <!-- <div ui-grid="gridOptions" ui-grid-pagination class="grid" style="margin-top:20px;"></div> -->
+	     
+		  <table class="table table-striped table-striped table-bordered"  style="margin-top:20px; width:100%; !important; table-layout: fixed;">
+		 <tr>
+		 <th style="width:8%;">User Name</th>
+		 <th class="ng-hide">Type</th>
+		 <th class="ng-hide">Tag</th>
+		 <th style="width:11%;">Name</th>
+		 <th style="width:3%;">Age</th>
+		 <th style="width:11%;">PhoneNumber</th>
+		 <th style="width:17%;">Email</th>
+		 <th style="width:7%;">City</th>
+		 <th>Country</th>
+		 <th style="width:7%;">PostalCode</th>
+		 <th style="width:7%;">Latitude</th>
+		 <th style="width:7%;">Logitude</th>
+		 <th style="width:12%;">CreatedTime</th>
+		 </tr>
+		 <tr ng-repeat="i in customers  | filter:search | startFrom:currentPage*pageSize | limitTo:pageSize">
+		  <td ng-class="applyClass(i,'userName')">{{i.userName | capitalize}}</td>
+		  <td class="ng-hide">{{i.type}}</td>
+		  <td class="ng-hide">{{i.tag.length}}</td>
+		 <td ng-class="applyClass(i,'name')">{{i.name | capitalize}}</td>
+		 <td>{{i.age}}</td>
+		 <td ng-class="applyClass(i,'phoneNumber')">{{i.phoneNumber}}</td>
+		 <td ng-class="applyClass(i,'email')" style=" width:17%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{i.email}}">{{i.email}}</td>
+		 <td>{{i.city}}</td>
+		 <td style=" width:17%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{i.country}}">{{i.country}}</td>
+		 <td>{{i.postalCode}}</td>
+		 <td>{{i.latitude}}</td>
+		 <td>{{i.longitude}}</td>
+		 <td>{{i.createdTime}}</td>
+		 </tr>
+		 </table>
+		 <div class="pull-right">
+			 <button class="btn" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+	         Previous
+	    	 </button>
+	    	 {{currentPage+1}}/{{numberOfPages()}}
+	    	 <button  class="btn" ng-disabled="currentPage >= customers.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+	         Next
+	    	 </button>
+		 </div>
+		 
+	</div>
+</div>
+ 
+</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">GENERATE JSON</h4>
+      </div>
+      <div class="modal-body">
+        <textarea rows="12" cols="78" ng-model="generateData"></textarea>
+        	<textarea style="display:none;" >{{generateData}}</textarea>
+      </div>
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="uploadData();">Upload</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>

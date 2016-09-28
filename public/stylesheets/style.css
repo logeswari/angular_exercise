@@ -4,3 +4,10 @@
   background-color: yellow !important;
   color: red;
 }
+
+.link {
+	margin-right:10px; 
+	color:white !important;
+	font-weight:bold;
+	font-size:16px;
+}

@@ -18,6 +18,7 @@ var customerSchema = new Schema({
 	  phoneNumber : String,
 	  createdTime : String,
 	  createdTimeStamp : String,
+	  type : String,
 	  tag : [{
 		  id : Number,
 		  field : String,
