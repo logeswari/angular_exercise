@@ -17,34 +17,34 @@ exports.list = function(req, res){
 exports.customerList = function(req,res){
 	
 	var query = {};
-	if(req.query.filters && req.query.filters.length > 0){
-		if(typeof req.query.filters == "string"){
-			req.query.filters = [req.query.filters]
-		}
-		var newExist = _.contains(req.query.filters, "New");
-		var oldExist = _.contains(req.query.filters, "Old");
-		var errorExist = _.contains(req.query.filters, "Error");
-		var missedExist = _.contains(req.query.filters, "Missed");
-		
-		var start = new Date(moment().startOf('day')).getTime()
-		
-		if(newExist && oldExist){
-			// Do Nothing
-		
-		}else if(newExist){
-			query.createdTimeStamp = {$gte : start}
-		}else if(oldExist){
-			query.createdTimeStamp = {$lte : start}
-		}
-		
-		if(errorExist && missedExist){
-			query["tag.id"] = {$in : [1,2]}
-		}else if(errorExist){
-			query["tag.id"] = 1
-		}else if(missedExist){
-			query["tag.id"] = 2
-		}
-	};
+//	if(req.query.filters && req.query.filters.length > 0){
+//		if(typeof req.query.filters == "string"){
+//			req.query.filters = [req.query.filters]
+//		}
+//		var newExist = _.contains(req.query.filters, "New");
+//		var oldExist = _.contains(req.query.filters, "Old");
+//		var errorExist = _.contains(req.query.filters, "Error");
+//		var missedExist = _.contains(req.query.filters, "Missed");
+//		
+//		var start = new Date(moment().startOf('day')).getTime()
+//		
+//		if(newExist && oldExist){
+//			// Do Nothing
+//		
+//		}else if(newExist){
+//			query.createdTimeStamp = {$gte : start}
+//		}else if(oldExist){
+//			query.createdTimeStamp = {$lte : start}
+//		}
+//		
+//		if(errorExist && missedExist){
+//			query["tag.id"] = {$in : [1,2]}
+//		}else if(errorExist){
+//			query["tag.id"] = 1
+//		}else if(missedExist){
+//			query["tag.id"] = 2
+//		}
+//	};
 	
 	Customer.find(query, function(err, customers) {
 		

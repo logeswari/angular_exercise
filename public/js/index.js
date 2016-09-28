@@ -20,7 +20,7 @@ app.config(function($routeProvider) {
     })
     
 });
-app.controller('listController', function($scope, $http) {
+app.controller('listController', function($scope, $http,filterFilter) {
 	
 	
   
@@ -105,7 +105,7 @@ app.controller('listController', function($scope, $http) {
     $scope.pageSize = 10;
    
     
-	$scope.loadData = function(){
+	$scope.loadData = function(from){
 		
 	    $scope.numberOfPages=function(){
 	        return Math.ceil($scope.data.length/$scope.pageSize);                
@@ -121,9 +121,13 @@ app.controller('listController', function($scope, $http) {
 	   
 	    .then(function (response) {    	
 	    	 $scope.customers = response.data.customers;
-	    	 $scope.numberOfPages=function(){
+	    	 $scope.numberOfPages= function(){
 	    	        return Math.ceil(response.data.customers.length/$scope.pageSize);                
 	    	    }
+	    	 
+	    	 if(from && from == 'fromUpload'){
+	    		 $('#myModal').modal('hide')
+	    	 }
 	    });
 	 };
 	 
@@ -137,7 +141,7 @@ app.controller('listController', function($scope, $http) {
 			    var resDta = response.data;
 			    
 		    	$scope.generateData = JSON.stringify(resDta.customers, null, 2);
-		    	$('#myModal').show();
+		    	$('#myModal').modal('show')
 		    });
 	}
 	
@@ -148,7 +152,8 @@ app.controller('listController', function($scope, $http) {
 		 $http.post(hostUrl+"/postData",data)
 		   
 		   .then(function (response) {  			    
-			   $scope.loadData();
+			   $scope.loadData('fromUpload');
+			   
 		    });
 	}
 	
@@ -161,7 +166,7 @@ app.controller('listController', function($scope, $http) {
                 'Error'
               ];
 	}
-	
+	$scope.searchedData = [];
 	// On filter choosen
 	$scope.filterChoosen = function(tag,type){
 		if(tag && tag.text){
@@ -178,7 +183,7 @@ app.controller('listController', function($scope, $http) {
 							return product.type == $scope.New || product.type == $scope.Old || product.type == $scope.Missed || product.tag != 0;
 						}else{
 							return product.type == $scope.New || product.type == $scope.Old || product.type == $scope.Missed
-						}
+						}																	
 					}
 		    	}else{
 		    		$scope.search = {};
@@ -186,6 +191,13 @@ app.controller('listController', function($scope, $http) {
 			    
 			}; 
 	}
+	
+//	$scope.$watch('search', function (newVal, oldVal) {		
+//		$scope.filtered = filterFilter($scope.generateData, newVal);
+//		$scope.totalItems = $scope.filtered.length;
+//		$scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
+//		$scope.currentPage = 0;
+//	}, true);
 
 });
 
