@@ -107,11 +107,9 @@ app.controller('listController', function($scope, $http,filterFilter) {
     
 	$scope.loadData = function(from){
 		
-	    $scope.numberOfPages=function(){
-	        return Math.ceil($scope.data.length/$scope.pageSize);                
-	    }
+	   
 		var data = {
-				filters : $scope.tags
+			//	filters : $scope.tags
 		}
 		
 		console.log(data)
