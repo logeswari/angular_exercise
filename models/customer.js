@@ -2,7 +2,7 @@
  * http://usejsdoc.org/
  */
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/angular_exercise');
+mongoose.connect('mongodb://localhost:12345/angular_exercise');
 var Schema = mongoose.Schema;
 
 var customerSchema = new Schema({
