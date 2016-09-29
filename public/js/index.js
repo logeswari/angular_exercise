@@ -119,8 +119,8 @@ app.controller('listController', function($scope, $http,filterFilter) {
 	   
 	    .then(function (response) {    	
 	    	 $scope.customers = response.data.customers;
-	    	 $scope.numberOfPages= function(){
-	    	        return Math.ceil(response.data.customers.length/$scope.pageSize);                
+	    	 $scope.numberOfPages = function(){
+	    	        return Math.ceil($scope.customers.length/$scope.pageSize);                
 	    	    }
 	    	 
 	    	 if(from && from == 'fromUpload'){
@@ -164,7 +164,7 @@ app.controller('listController', function($scope, $http,filterFilter) {
                 'Error'
               ];
 	}
-	$scope.searchedData = [];
+
 	// On filter choosen
 	$scope.filterChoosen = function(tag,type){
 		if(tag && tag.text){
@@ -178,7 +178,7 @@ app.controller('listController', function($scope, $http,filterFilter) {
 			if($scope.New || $scope.Old || $scope.Missed || $scope.Error){
 					$scope.search = function(product){
 						if($scope.Error){
-							return product.type == $scope.New || product.type == $scope.Old || product.type == $scope.Missed || product.tag != 0;
+							return product.type == $scope.New || product.type == $scope.Old || product.type == $scope.Missed || (product.tag && product.tag.length != 0);
 						}else{
 							return product.type == $scope.New || product.type == $scope.Old || product.type == $scope.Missed
 						}																	
@@ -190,12 +190,12 @@ app.controller('listController', function($scope, $http,filterFilter) {
 			}; 
 	}
 	
-//	$scope.$watch('search', function (newVal, oldVal) {		
-//		$scope.filtered = filterFilter($scope.generateData, newVal);
-//		$scope.totalItems = $scope.filtered.length;
-//		$scope.numberOfPages = Math.ceil($scope.totalItems / $scope.pageSize);
-//		$scope.currentPage = 0;
-//	}, true);
+	$scope.$watch('search', function (newVal, oldVal) {		
+		$scope.filtered = filterFilter($scope.customers, newVal);
+		$scope.totalItems = $scope.filtered.length;
+		$scope.numberOfPages = function(){ return Math.ceil($scope.totalItems / $scope.pageSize)};
+		$scope.currentPage = 0;
+	}, true);
 
 });
 
